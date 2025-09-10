@@ -4,7 +4,6 @@ namespace _1._1.Models
 {
     public class ProductoModel
     {
-        //public int Id {get; set;}
         public int Id { get; set; }
         [Key]
         public string Nombre { get; set; }
