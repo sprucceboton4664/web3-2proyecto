@@ -3,8 +3,10 @@ using pedido1.Models;
 
 namespace pedido1.Data
 {
+
     public class PedidosDBContext : DbContext
     {
+        public PedidosDBContext() { }
         public PedidosDBContext(DbContextOptions<PedidosDBContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
@@ -40,6 +42,8 @@ namespace pedido1.Data
                 .WithMany(p => p.DetallePedidos)
                 .HasForeignKey(oi => oi.IdProducto);
         }
+
     }
+
 }
  
