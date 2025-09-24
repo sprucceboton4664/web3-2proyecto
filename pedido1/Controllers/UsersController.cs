@@ -56,7 +56,7 @@ namespace pedido1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Email,Direccion")] User user)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
