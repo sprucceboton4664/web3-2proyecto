@@ -19,9 +19,20 @@ namespace pedido1.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, decimal? minPrice, decimal? maxPrice)
         {
-            return View(await _context.Products.ToListAsync());
+            var products = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+                products = products.Where(p => p.Nombre.Contains(search));
+
+            if (minPrice.HasValue)
+                products = products.Where(p => p.Precio >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                products = products.Where(p => p.Precio <= maxPrice.Value);
+
+            return View(await products.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
