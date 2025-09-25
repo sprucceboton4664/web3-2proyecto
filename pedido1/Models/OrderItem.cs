@@ -7,7 +7,6 @@
         public int IdProducto { get; set; }
         public int Cantidad { get; set; }
         public decimal Subtotal { get; set; }
-
         public Order Pedido { get; set; }
         public Product Producto { get; set; }
     }
