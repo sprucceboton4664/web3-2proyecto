@@ -19,14 +19,13 @@ namespace pedido1.Controllers
             _context = context;
         }
 
-        // GET: Orders
         public async Task<IActionResult> Index()
         {
             var pedidosDBContext = _context.Orders.Include(o => o.Cliente);
             return View(await pedidosDBContext.ToListAsync());
         }
 
-        // GET: Orders/Details/5
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,8 +43,6 @@ namespace pedido1.Controllers
 
             return View(order);
         }
-
-        // GET: Orders/Create
         public IActionResult Create()
         {
             ViewData["IdCliente"] = new SelectList(_context.Users, "Id", "Id");
@@ -57,19 +54,30 @@ namespace pedido1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdCliente,Estado,Fecha,Total")] Order order)
+        public async Task<IActionResult> Create(Order order, List<OrderItem> items)
         {
-            if (ModelState.IsValid)
+            decimal total = 0;
+            foreach (var item in items)
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var product = await _context.Products.FindAsync(item.IdProducto);
+                if (product == null || product.Stock < item.Cantidad)
+                {
+                    ModelState.AddModelError("", $"Stock insuficiente para {product?.Nombre ?? "producto"}");
+                    return View(order);
+                }
+                item.Subtotal = item.Cantidad * product.Precio;
+                product.Stock -= item.Cantidad;
+                total += item.Subtotal;
             }
-            ViewData["IdCliente"] = new SelectList(_context.Users, "Id", "Id", order.IdCliente);
-            return View(order);
+            order.Total = total;
+            order.Fecha = DateTime.Now;
+            order.Estado = 0; 
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -122,7 +130,7 @@ namespace pedido1.Controllers
             return View(order);
         }
 
-        // GET: Orders/Delete/5
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
