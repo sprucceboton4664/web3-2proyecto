@@ -1,37 +1,123 @@
 ﻿@{
-    ViewData["Title"] = "Página Principal";
+    ViewData["Title"] = "Inicio - Recetas App";
 }
 
-<div class="text-center">
-    <h1 class="display-4">¡Bienvenido a Recetas!</h1>
-    <p>Descubre y comparte las mejores recetas.</p>
+<div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+    <div class="container-fluid">
+        <h1 class="display-4">¡Bienvenido a Recetas App!</h1>
+        <p class="lead">Organiza y gestiona todas tus recetas favoritas de manera sencilla</p>
+
+        <div class="row mt-3">
+            <div class="col-md-4 text-center">
+                <h3>@ViewBag.CategoryCount</h3>
+                <small>Categorías</small>
+            </div>
+            <div class="col-md-4 text-center">
+                <h3>@ViewBag.RecipeCount</h3>
+                <small>Recetas</small>
+            </div>
+            <div class="col-md-4 text-center">
+                <h3>@ViewBag.IngredientCount</h3>
+                <small>Ingredientes</small>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Explorar Recetas</h5>
-                <p class="card-text">Encuentra deliciosas recetas organizadas por categorías.</p>
-                <a asp-controller="Recipes" asp-action="Index" class="btn btn-primary">Ver Recetas</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Agregar Receta</h5>
-                <p class="card-text">Comparte tu receta favorita con la comunidad.</p>
-                <a asp-controller="Recipes" asp-action="Create" class="btn btn-success">Nueva Receta</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-list-alt fa-3x text-primary"></i>
+                </div>
                 <h5 class="card-title">Categorías</h5>
-                <p class="card-text">Organiza y gestiona las categorías de recetas.</p>
-                <a asp-controller="Categories" asp-action="Index" class="btn btn-info">Ver Categorías</a>
+                <p class="card-text">Organiza tus recetas por categorías como postres, platos principales, aperitivos y más.</p>
+                <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Ver Categorías</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-utensils fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Recetas</h5>
+                <p class="card-text">Descubre y crea nuevas recetas con instrucciones detalladas y niveles de dificultad.</p>
+                <a asp-controller="Recipes" asp-action="Index" class="btn btn-success">Ver Recetas</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-seedling fa-3x text-warning"></i>
+                </div>
+                <h5 class="card-title">Ingredientes</h5>
+                <p class="card-text">Gestiona todos los ingredientes necesarios para tus recetas con cantidades precisas.</p>
+                <a asp-controller="Ingredients" asp-action="Index" class="btn btn-warning">Ver Ingredientes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.RecentRecipes != null && ((List<PrimerParcial.Models.Recipe>)ViewBag.RecentRecipes).Any())
+{
+    <div class="mt-5">
+        <h3>Recetas Recientes</h3>
+        <div class="row">
+            @foreach (var recipe in (List<PrimerParcial.Models.Recipe>)ViewBag.RecentRecipes)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@recipe.Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@recipe.Category.Name</h6>
+                            <p class="card-text">@recipe.Description</p>
+                            <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div class="mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Acciones Rápidas</h3>
+            <div class="list-group">
+                <a asp-controller="Recipes" asp-action="Create" class="list-group-item list-group-item-action">
+                    <strong>Agregar Nueva Receta</strong>
+                    <p class="mb-1">Crea una nueva receta con todos sus detalles</p>
+                </a>
+                <a asp-controller="Categories" asp-action="Create" class="list-group-item list-group-item-action">
+                    <strong>Crear Nueva Categoría</strong>
+                    <p class="mb-1">Organiza mejor tus recetas creando nuevas categorías</p>
+                </a>
+                <a asp-controller="Ingredients" asp-action="Create" class="list-group-item list-group-item-action">
+                    <strong>Agregar Ingrediente</strong>
+                    <p class="mb-1">Agrega ingredientes a tus recetas existentes</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="alert alert-info">
+                <h4 class="alert-heading">¡Comienza ahora!</h4>
+                <p>Para empezar a usar la aplicación:</p>
+                <ol>
+                    <li>Crea algunas categorías (ej: Postres, Platos Principales)</li>
+                    <li>Agrega tus recetas favoritas</li>
+                    <li>Especifica los ingredientes necesarios para cada receta</li>
+                </ol>
+                <hr>
+                <p class="mb-0">¡Es así de fácil organizar todas tus recetas!</p>
             </div>
         </div>
     </div>

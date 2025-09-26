@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PrimerParcial.Data;
@@ -19,14 +15,14 @@ namespace PrimerParcial.Controllers
             _context = context;
         }
 
-        // GET: Recipes1
+        // GET: Recipes
         public async Task<IActionResult> Index()
         {
-            var recetasDBContext = _context.Recipes.Include(r => r.Category);
-            return View(await recetasDBContext.ToListAsync());
+            var recipes = _context.Recipes.Include(r => r.Category);
+            return View(await recipes.ToListAsync());
         }
 
-        // GET: Recipes1/Details/5
+        // GET: Recipes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,7 +32,9 @@ namespace PrimerParcial.Controllers
 
             var recipe = await _context.Recipes
                 .Include(r => r.Category)
+                .Include(r => r.Ingredients)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (recipe == null)
             {
                 return NotFound();
@@ -45,22 +43,21 @@ namespace PrimerParcial.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes1/Create
+        // GET: Recipes/Create
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
-        // POST: Recipes1/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Recipes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,PreparationTimeMinutes,Servings,Instructions,DateCreated,CategoryId")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("Name,Description,Instructions,DifficultyLevel,PreparationTime,CategoryId")] Recipe recipe)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
+                recipe.CreatedDate = DateTime.Now;
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -69,7 +66,7 @@ namespace PrimerParcial.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes1/Edit/5
+        // GET: Recipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,12 +83,10 @@ namespace PrimerParcial.Controllers
             return View(recipe);
         }
 
-        // POST: Recipes1/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Recipes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,PreparationTimeMinutes,Servings,Instructions,DateCreated,CategoryId")] Recipe recipe)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Instructions,DifficultyLevel,PreparationTime,CategoryId,CreatedDate")] Recipe recipe)
         {
             if (id != recipe.Id)
             {
@@ -122,7 +117,7 @@ namespace PrimerParcial.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes1/Delete/5
+        // GET: Recipes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,6 +128,7 @@ namespace PrimerParcial.Controllers
             var recipe = await _context.Recipes
                 .Include(r => r.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (recipe == null)
             {
                 return NotFound();
@@ -141,7 +137,7 @@ namespace PrimerParcial.Controllers
             return View(recipe);
         }
 
-        // POST: Recipes1/Delete/5
+        // POST: Recipes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -150,9 +146,8 @@ namespace PrimerParcial.Controllers
             if (recipe != null)
             {
                 _context.Recipes.Remove(recipe);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

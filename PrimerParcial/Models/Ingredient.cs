@@ -4,6 +4,9 @@ namespace PrimerParcial.Models
 {
     public class Ingredient
     {
+        //Completar el proyecto implementando los modelos faltantes , soluciones simples apegarse al mvc utilizando principios SOLID DRY y KISS , buenas practicas escalable terminar  implementando  las vistas y controladores de manera  correcta 
+        // hacer validaciones unicamente necesarias implementar las vistas en el layout sin problemas y Mantenlo simple
+
         // Clave Primaria (PK)
         public int Id { get; set; }
 
@@ -22,4 +25,3 @@ namespace PrimerParcial.Models
         public Recipe Recipe { get; set; }
     }
 }
-
