@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PrimerParcial.Data;
@@ -22,8 +18,8 @@ namespace PrimerParcial.Controllers
         // GET: Ingredients
         public async Task<IActionResult> Index()
         {
-            var recetasDBContext = _context.Ingredients.Include(i => i.Recipe);
-            return View(await recetasDBContext.ToListAsync());
+            var ingredients = _context.Ingredients.Include(i => i.Recipe);
+            return View(await ingredients.ToListAsync());
         }
 
         // GET: Ingredients/Details/5
@@ -37,6 +33,7 @@ namespace PrimerParcial.Controllers
             var ingredient = await _context.Ingredients
                 .Include(i => i.Recipe)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ingredient == null)
             {
                 return NotFound();
@@ -48,24 +45,22 @@ namespace PrimerParcial.Controllers
         // GET: Ingredients/Create
         public IActionResult Create()
         {
-            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description");
+            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Name");
             return View();
         }
 
         // POST: Ingredients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Quantity,RecipeId")] Ingredient ingredient)
+        public async Task<IActionResult> Create([Bind("Name,Quantity,RecipeId")] Ingredient ingredient)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(ingredient);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", ingredient.RecipeId);
+            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Name", ingredient.RecipeId);
             return View(ingredient);
         }
 
@@ -82,13 +77,11 @@ namespace PrimerParcial.Controllers
             {
                 return NotFound();
             }
-            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", ingredient.RecipeId);
+            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Name", ingredient.RecipeId);
             return View(ingredient);
         }
 
         // POST: Ingredients/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Quantity,RecipeId")] Ingredient ingredient)
@@ -118,7 +111,7 @@ namespace PrimerParcial.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", ingredient.RecipeId);
+            ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Name", ingredient.RecipeId);
             return View(ingredient);
         }
 
@@ -133,6 +126,7 @@ namespace PrimerParcial.Controllers
             var ingredient = await _context.Ingredients
                 .Include(i => i.Recipe)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ingredient == null)
             {
                 return NotFound();
@@ -150,9 +144,8 @@ namespace PrimerParcial.Controllers
             if (ingredient != null)
             {
                 _context.Ingredients.Remove(ingredient);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
