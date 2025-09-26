@@ -1,8 +1,38 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Página Principal";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">¡Bienvenido a Recetas!</h1>
+    <p>Descubre y comparte las mejores recetas.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Explorar Recetas</h5>
+                <p class="card-text">Encuentra deliciosas recetas organizadas por categorías.</p>
+                <a asp-controller="Recipes" asp-action="Index" class="btn btn-primary">Ver Recetas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Agregar Receta</h5>
+                <p class="card-text">Comparte tu receta favorita con la comunidad.</p>
+                <a asp-controller="Recipes" asp-action="Create" class="btn btn-success">Nueva Receta</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Categorías</h5>
+                <p class="card-text">Organiza y gestiona las categorías de recetas.</p>
+                <a asp-controller="Categories" asp-action="Index" class="btn btn-info">Ver Categorías</a>
+            </div>
+        </div>
+    </div>
 </div>

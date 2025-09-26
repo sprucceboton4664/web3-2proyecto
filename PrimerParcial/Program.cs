@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using PrimerParcial.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<PrimerParcial.Data.RecetasDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default_Connection")));
+// Configurar Entity Framework con SQL Server
+builder.Services.AddDbContext<RecetasDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
