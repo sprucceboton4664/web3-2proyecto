@@ -1,7 +1,6 @@
-using WebAPI1.models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI1.Controllers
+namespace Examen1.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,4 +1,4 @@
-namespace WebAPI1.models
+namespace Examen1
 {
     public class WeatherForecast
     {
